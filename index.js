@@ -70,7 +70,7 @@ class TideData {
                 end_date: apiEndDateString,
                 station: 9410170, // San Diego
                 product: 'predictions', // water_level has historical, but nothing in the future
-                datum: 'MTL',
+                datum: 'STND', // Station Datum
                 time_zone: 'gmt',
                 units: 'english',
                 format: 'json'
