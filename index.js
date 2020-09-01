@@ -139,13 +139,14 @@ class Main {
             const hour = req.params.hour;
             const minute = req.params.minute;
             const dataEntry = this.tideData.getEntry(new Date(`${year}-${month}-${day}T${hour}:${minute}:00.000Z`));
+
             if (dataEntry) {
                 res.send(JSON.stringify(dataEntry));
             } else {
                 res.status(500);
                 res.send(JSON.stringify({error: "No data available for this date"}));
             }
-        })
+        });
     }
 
     run() {
