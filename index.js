@@ -7,6 +7,35 @@ class TideData {
     // use an array where each index is a new 6 minute interval
     // starting offset of 0 would be Jan 1 2020 00:00:00Z
 
+    // format for water_levels
+    // {
+    //     metadata: {
+    //         id: '9410170',
+    //         name: 'San Diego, San Diego Bay',
+    //         lat: '32.7142',
+    //         lon: '-117.1736'
+    //     },
+    //     data: [
+    //         {
+    //             t: '2020-01-01 00:00',
+    //             v: '-0.531',
+    //             s: '0.033',
+    //             f: '0,0,0,0',
+    //             q: 'v'
+    //         },
+    //         ...
+    //     ]
+    // }
+
+    // format for predictions
+    // {
+    //    "predictions" : [
+    //         {"t":"2020-01-01 00:00", "v":"5.889"},
+    //         {"t":"2020-01-01 00:06", "v":"5.804"},
+    //         ...
+    //    ]
+    // }
+
     constructor() {
         this.rawData = [];
 
@@ -40,7 +69,7 @@ class TideData {
                 begin_date: apiBeginDateString,
                 end_date: apiEndDateString,
                 station: 9410170, // San Diego
-                product: 'water_level',
+                product: 'predictions', // water_level has historical, but nothing in the future
                 datum: 'MTL',
                 time_zone: 'gmt',
                 units: 'english',
