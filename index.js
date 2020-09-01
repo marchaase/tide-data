@@ -113,6 +113,15 @@ class Main {
         this.app.get('/', (req, res) => {
             res.send('hello world');
         });
+
+        this.app.get('/tide-data/:year/:month/:day/:hour/:minute', (req, res) => {
+            const year = req.params.year;
+            const month = req.params.month;
+            const day = req.params.day;
+            const hour = req.params.hour;
+            const minute = req.params.minute;
+            res.send(JSON.stringify(this.tideData.getEntry(new Date(`${year}-${month}-${day}T${hour}:${minute}:00.000Z`))));
+        })
     }
 
     run() {
