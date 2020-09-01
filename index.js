@@ -167,13 +167,6 @@ class Main {
             const hour = req.params.hour ?? '00';
             const minute = req.params.minute ?? '00';
 
-            // pad total possible 0's then slice total possible 0's len from end of string
-            const yearPad = `0000${year}`.slice(-4);
-            const monthPad = `00${month}`.slice(-2);
-            const dayPad = `00${day}`.slice(-2);
-            const hourPad = `00${hour}`.slice(-2);
-            const minutePad = `00${minute}`.slice(-2);
-
             let dataEntry;
             try {
                 dataEntry = this.getTideData(year, month, day, hour, minute);
