@@ -76,6 +76,7 @@ class TideData {
         //     ]
         // }
 
+        // TODO: should check data and store at correct index using getIndexFromTime() indexing
         this.rawData = this.rawData.concat(payload.data);
         console.log(`current rawData size: ${this.rawData.length}`);
     }
