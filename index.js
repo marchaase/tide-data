@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const got = require('got');
+const { ApolloServer, gql } = require('apollo-server-express');
 
 class TideData {
     // NOAA water level product has 6 minute intervals, so structure local data storage to match that
@@ -128,16 +129,34 @@ class Main {
     constructor(listenPort) {
         this.listenPort = listenPort;
 
-        this.app = express();
         this.tideData = new TideData();
 
         this.setupExpress();
+        this.setupApollo();
         this.setupRoutes();
     }
 
     setupExpress() {
+        this.app = express();
         this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use(bodyParser.json());
+    }
+
+    setupApollo() {
+        const typeDefs = gql`
+            type Query {
+                hello: String
+            }
+        `;
+
+        const resolvers = {
+            Query: {
+                hello: () => 'Hello world!',
+            },
+        };
+
+        this.apollo = new ApolloServer({typeDefs, resolvers});
+        this.apollo.applyMiddleware({app: this.app});
     }
 
     getDateString(year, month, day, hour, minute) {
@@ -206,7 +225,10 @@ class Main {
     }
 
     run() {
-        this.app.listen(this.listenPort, () => console.log(`server listening on ${this.listenPort}`));
+        this.app.listen(this.listenPort, () => {
+            console.log(`server listening on ${this.listenPort}`);
+            console.log(`graphqlPath: ${this.apollo.graphqlPath}`);
+        });
     }
 }
 
