@@ -132,19 +132,38 @@ class Main {
         });
 
         // curl -v localhost:3000/tide-data/2020/08/01/00/00
-        this.app.get('/tide-data/:year/:month/:day/:hour/:minute', (req, res) => {
-            const year = req.params.year;
-            const month = req.params.month;
-            const day = req.params.day;
-            const hour = req.params.hour;
-            const minute = req.params.minute;
-            const dataEntry = this.tideData.getEntry(new Date(`${year}-${month}-${day}T${hour}:${minute}:00.000Z`));
+        this.app.get('/tide-data/:year?/:month?/:day?/:hour?/:minute?', (req, res) => {
+            const year = req.params.year ?? '2020';
+            const month = req.params.month ?? '1';
+            const day = req.params.day ?? '1';
+            const hour = req.params.hour ?? '00';
+            const minute = req.params.minute ?? '00';
 
-            if (dataEntry) {
-                res.send(JSON.stringify(dataEntry));
-            } else {
+            // pad total possible 0's then slice total possible 0's len from end of string
+            const yearPad = `0000${year}`.slice(-4);
+            const monthPad = `00${month}`.slice(-2);
+            const dayPad = `00${day}`.slice(-2);
+            const hourPad = `00${hour}`.slice(-2);
+            const minutePad = `00${minute}`.slice(-2);
+
+            let dataEntry;
+            try {
+                const dateString = `${yearPad}-${monthPad}-${dayPad}T${hourPad}:${minutePad}:00.000Z`;
+                dataEntry = this.tideData.getEntry(new Date(dateString));
+                if (dataEntry) {
+                    res.status(200);
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(JSON.stringify(dataEntry));
+                } else {
+                    throw 'no data';
+                }
+            } catch {
+                // catch bad Date() format, or no data found
                 res.status(500);
-                res.send(JSON.stringify({error: "No data available for this date"}));
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify({
+                    error: `No data available for this date (${dateString})`
+                }));
             }
         });
     }
