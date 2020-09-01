@@ -43,7 +43,7 @@ class TideData {
         }
     }
 
-    parseData(data) {
+    parseData(payload) {
         // TODO: assuming all data in order already, just append to existing storage
 
         // expecting format:
@@ -65,6 +65,9 @@ class TideData {
         //         ...
         //     ]
         // }
+
+        this.rawData = this.rawData.concat(payload.data);
+        console.log(`current rawData size: ${this.rawData.length}`);
     }
 
 }
