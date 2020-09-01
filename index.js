@@ -56,10 +56,10 @@ class TideData {
                 console.log('ERROR: ', err);
                 // TODO: need to handle error case, will mess up rawData with current append methodology
             });
-            await request; // force synchronous to ensure async requests come back in order
+            await request; // force synchronous to ensure async requests come back in order, since parseData is assuming in order
 
             reqStartDate = reqEndDate;
-            reqStartDate.setDate(reqStartDate.getDate() + 1); // increment one day so we dont include the same day again
+            reqStartDate.setDate(reqStartDate.getDate() + 1); // increment one day since NOAA API is inclusive on end date
         }
     }
 
