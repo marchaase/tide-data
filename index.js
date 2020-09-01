@@ -167,6 +167,14 @@ class Main {
                 }));
             }
         });
+
+        this.app.get('/*', (req, res) => {
+            res.status(400);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify({
+                error: 'No API endpoint'
+            }));
+        });
     }
 
     run() {
