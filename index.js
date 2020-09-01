@@ -24,7 +24,6 @@ class TideData {
 
         let reqStartDate = startDate;
         while(reqStartDate < endDate) {
-
             // compute end date for request
             let reqEndDate = new Date(reqStartDate);
             reqEndDate.setDate(reqStartDate.getDate() + daysIncrement);
