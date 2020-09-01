@@ -140,7 +140,7 @@ class Main {
         this.app.use(bodyParser.json());
     }
 
-    getTideData(year, month, day, hour, minute) {
+    getDateString(year, month, day, hour, minute) {
         // pad total possible 0's then slice total possible 0's len from end of string
         const yearPad = `0000${year}`.slice(-4);
         const monthPad = `00${month}`.slice(-2);
@@ -148,9 +148,16 @@ class Main {
         const hourPad = `00${hour}`.slice(-2);
         const minutePad = `00${minute}`.slice(-2);
 
-        const dateString = `${yearPad}-${monthPad}-${dayPad}T${hourPad}:${minutePad}:00.000Z`;
+        return `${yearPad}-${monthPad}-${dayPad}T${hourPad}:${minutePad}:00.000Z`;
+    }
 
-        return this.tideData.getEntry(new Date(dateString));
+    getTideData(year, month, day, hour, minute) {
+        const dateString = this.getDateString(year, month, day, hour, minute);
+        const date = new Date(dateString);
+        if (isNaN(date.valueOf())) {
+            throw `Invalid date string ${dateString}`;
+        }
+        return this.tideData.getEntry(date);
     }
 
     setupRoutes() {
@@ -172,14 +179,14 @@ class Main {
                 dataEntry = this.getTideData(year, month, day, hour, minute);
 
                 if (!dataEntry) {
-                    throw 'no data'; // just throw same as getTideData for date error since same response
+                    throw 'no data stored for this time'; // just throw same as getTideData for date error since same response
                 }
-            } catch {
+            } catch(err) {
                 // catch bad Date() format, or no data found
                 res.status(500);
                 res.setHeader('Content-Type', 'application/json');
                 res.send(JSON.stringify({
-                    error: `No data available for this date (${dateString})`
+                    error: err
                 }));
                 return;
             }
