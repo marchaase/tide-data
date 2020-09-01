@@ -30,9 +30,14 @@ class TideData {
             reqEndDate.setDate(reqStartDate.getDate() + daysIncrement);
             if (reqEndDate > endDate) reqEndDate = endDate;
 
-            console.log(`requesting data for ${reqStartDate} - ${reqEndDate}`);
+            console.log(`requesting data for ${reqStartDate.toISOString()} - ${reqEndDate.toISOString()}`);
 
-            let url = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=20200101&end_date=20200131&station=9410170&product=water_level&datum=MTL&time_zone=gmt&units=english&format=json';
+            // super hacky because JS Date isn't great, grab first 10 chars of ISO format
+            let apiBeginDate = `${reqStartDate.toISOString().slice(0,4)}${reqStartDate.toISOString().slice(5,7)}${reqStartDate.toISOString().slice(8,10)}`
+            let apiEndDate = `${reqEndDate.toISOString().slice(0,4)}${reqEndDate.toISOString().slice(5,7)}${reqEndDate.toISOString().slice(8,10)}`
+
+            let url = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${apiBeginDate}&end_date=${apiEndDate}&station=9410170&product=water_level&datum=MTL&time_zone=gmt&units=english&format=json`;
+            console.log(url);
             let request = got(url, {
                 responseType: 'json'
             }).then((res) => {
@@ -44,6 +49,7 @@ class TideData {
             await request; // force synchronous to ensure async requests come back in order
 
             reqStartDate = reqEndDate;
+            reqStartDate.setDate(reqStartDate.getDate() + 1); // increment one day so we dont include the same day again
         }
     }
 
