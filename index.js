@@ -3,8 +3,12 @@ const bodyParser = require('body-parser');
 const got = require('got');
 
 class TideData {
+    // NOAA water level product has 6 minute intervals, so structure local data storage to match that
+    // use an array where each index is a new 6 minute interval
+    // starting offset of 0 would be Jan 1 2020 00:00:00Z
+
     constructor() {
-        this.rawData = []
+        this.rawData = [];
 
         this.downloadData();
     }
@@ -70,6 +74,23 @@ class TideData {
         console.log(`current rawData size: ${this.rawData.length}`);
     }
 
+    getEntry(time) {
+        return this.rawData[this.getIndexFromTime(time)];
+    }
+
+    getIndexFromTime(time) {
+        // get the index given a time
+        // round the given time down to previous 6 minute interval start
+        // starting offset is Jan 1 2020 midnight.
+        const intervalTimeMs = 6 * 60 * 1000;
+        const startOffsetEpoch = new Date('2020-01-01T00:00:00.000Z').valueOf();
+        const thisTimeEpoch = time.valueOf();
+        const flooredTimeEpoch = thisTimeEpoch - thisTimeEpoch % intervalTimeMs;
+
+        const offsetIndex = (flooredTimeEpoch - startOffsetEpoch) / intervalTimeMs;
+
+        return offsetIndex;
+    }
 }
 
 class Main {
