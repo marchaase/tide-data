@@ -128,6 +128,7 @@ class Main {
 
     setupRoutes() {
         this.app.get('/', (req, res) => {
+            res.status(200);
             res.send('hello world');
         });
 
