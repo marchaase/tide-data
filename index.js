@@ -120,13 +120,20 @@ class Main {
             res.send('hello world');
         });
 
+        // curl -v localhost:3000/tide-data/2020/08/01/00/00
         this.app.get('/tide-data/:year/:month/:day/:hour/:minute', (req, res) => {
             const year = req.params.year;
             const month = req.params.month;
             const day = req.params.day;
             const hour = req.params.hour;
             const minute = req.params.minute;
-            res.send(JSON.stringify(this.tideData.getEntry(new Date(`${year}-${month}-${day}T${hour}:${minute}:00.000Z`))));
+            const dataEntry = this.tideData.getEntry(new Date(`${year}-${month}-${day}T${hour}:${minute}:00.000Z`));
+            if (dataEntry) {
+                res.send(JSON.stringify(dataEntry));
+            } else {
+                res.status(500);
+                res.send(JSON.stringify({error: "No data available for this date"}));
+            }
         })
     }
 
