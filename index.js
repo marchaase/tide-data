@@ -178,7 +178,7 @@ class Main {
     }
 
     run() {
-        this.app.listen(this.listenPort, () => console.log(`hello world listening on ${this.listenPort}`));
+        this.app.listen(this.listenPort, () => console.log(`server listening on ${this.listenPort}`));
     }
 }
 
