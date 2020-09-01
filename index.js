@@ -19,7 +19,7 @@ class TideData {
         // limited to 31 days max per request
 
         let startDate = new Date('2020-01-01T00:00:00.000Z');
-        let endDate = new Date('2020-12-31T23:59:59.999Z');
+        const endDate = new Date('2020-12-31T23:59:59.999Z');
         let daysIncrement = 31;
 
         let reqStartDate = startDate;
