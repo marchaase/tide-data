@@ -32,18 +32,29 @@ class TideData {
             console.log(`requesting data for ${reqStartDate.toISOString()} - ${reqEndDate.toISOString()}`);
 
             // super hacky because JS Date isn't great, grab first 10 chars of ISO format
-            let apiBeginDate = `${reqStartDate.toISOString().slice(0,4)}${reqStartDate.toISOString().slice(5,7)}${reqStartDate.toISOString().slice(8,10)}`
-            let apiEndDate = `${reqEndDate.toISOString().slice(0,4)}${reqEndDate.toISOString().slice(5,7)}${reqEndDate.toISOString().slice(8,10)}`
+            let apiBeginDateString = reqStartDate.toISOString().slice(0,10).replace(/-/g, '');
+            let apiEndDateString = reqEndDate.toISOString().slice(0,10).replace(/-/g, '');
 
-            let url = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=${apiBeginDate}&end_date=${apiEndDate}&station=9410170&product=water_level&datum=MTL&time_zone=gmt&units=english&format=json`;
-            console.log(url);
+            let url = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter';
+            let queryParams = {
+                begin_date: apiBeginDateString,
+                end_date: apiEndDateString,
+                station: 9410170, // San Diego
+                product: 'water_level',
+                datum: 'MTL',
+                time_zone: 'gmt',
+                units: 'english',
+                format: 'json'
+            };
+
             let request = got(url, {
-                responseType: 'json'
+                responseType: 'json',
+                searchParams: queryParams
             }).then((res) => {
                 this.parseData(res.body)
             }).catch((err) => {
-                console.log('ERROR: ');
-                console.log(err);
+                console.log('ERROR: ', err);
+                // TODO: need to handle error case, will mess up rawData with current append methodology
             });
             await request; // force synchronous to ensure async requests come back in order
 
