@@ -80,10 +80,16 @@ class TideData {
                 responseType: 'json',
                 searchParams: queryParams
             }).then((res) => {
-                this.parseData(res.body)
-            }).catch((err) => {
-                console.log('ERROR: ', err);
+                if (res.body.error) {
                 // TODO: need to handle error case, will mess up rawData with current append methodology
+                    console.log('ERROR: ', res.body.err);
+                } else {
+                    //this.parseData(res.body.data); // data is the member for water_level
+                    this.parseData(res.body.predictions) // predictions is the member for predictions
+                }
+            }).catch((err) => {
+                // TODO: need to handle error case, will mess up rawData with current append methodology
+                console.log('ERROR: ', err);
             });
             await request; // force synchronous to ensure async requests come back in order, since parseData is assuming in order
 
@@ -92,31 +98,10 @@ class TideData {
         }
     }
 
-    parseData(payload) {
+    parseData(payloadArray) {
         // TODO: assuming all data in order already, just append to existing storage
-
-        // expecting format:
-        // {
-        //     metadata: {
-        //         id: '9410170',
-        //         name: 'San Diego, San Diego Bay',
-        //         lat: '32.7142',
-        //         lon: '-117.1736'
-        //     },
-        //     data: [
-        //         {
-        //             t: '2020-01-01 00:00',
-        //             v: '-0.531',
-        //             s: '0.033',
-        //             f: '0,0,0,0',
-        //             q: 'v'
-        //         },
-        //         ...
-        //     ]
-        // }
-
         // TODO: should check data and store at correct index using getIndexFromTime() indexing
-        this.rawData = this.rawData.concat(payload.data);
+        this.rawData = this.rawData.concat(payloadArray);
         console.log(`current rawData size: ${this.rawData.length}`);
     }
 
