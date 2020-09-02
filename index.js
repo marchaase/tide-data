@@ -146,6 +146,7 @@ class Main {
         const typeDefs = gql`
             type Query {
                 tide(year: Int, month: Int, day: Int, hour: Int, minute: Int, dateString: String): TideEntry
+                tides(dateStringStart: String!, dateStringEnd: String!): [TideEntry]
             }
             type TideEntry {
                 time: String!,
@@ -170,6 +171,12 @@ class Main {
 
                     return {time: tideEntry.t, value: tideEntry.v};
                 },
+                tides: (parent, args, context, info) => {
+                    const dateStart = new Date(args.dateStringStart);
+                    const dateEnd = new Date(args.dateStringEnd);
+
+                    return null;
+                }
             },
         };
 
