@@ -145,7 +145,7 @@ class Main {
     setupApollo() {
         const typeDefs = gql`
             type Query {
-                tide(year: Int, month: Int, day: Int, hour: Int, minute: Int, datestring: String): TideEntry
+                tide(year: Int, month: Int, day: Int, hour: Int, minute: Int, dateString: String): TideEntry
             }
             type TideEntry {
                 time: String!,
@@ -157,8 +157,8 @@ class Main {
             Query: {
                 tide: (parent, args, context, info) => {
                     let date;
-                    if (args.datestring) {
-                        date = new Date(args.datestring);
+                    if (args.dateString) {
+                        date = new Date(args.dateString);
                     } else {
                         const dateString = this.getDateString(args.year, args.month, args.day, args.hour, args.minute);
                         date = new Date(dateString);
