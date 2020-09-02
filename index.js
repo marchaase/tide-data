@@ -145,13 +145,25 @@ class Main {
     setupApollo() {
         const typeDefs = gql`
             type Query {
-                hello: String
+                tide(year: Int, month: Int, day: Int, hour: Int, minute: Int): TideEntry
+            }
+            type TideEntry {
+                time: String!,
+                value: Float!
             }
         `;
 
         const resolvers = {
             Query: {
-                hello: () => 'Hello world!',
+                tide: (parent, args, context, info) => {
+                    const dateString = this.getDateString(args.year, args.month, args.day, args.hour, args.minute);
+                    const date = new Date(dateString);
+                    if (isNaN(date.valueOf())) {
+                        throw `Invalid date string ${dateString}`;
+                    }
+                    const tideEntry = this.tideData.getEntry(date);
+                    return {time: tideEntry.t, value: tideEntry.v};
+                },
             },
         };
 
