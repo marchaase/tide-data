@@ -172,6 +172,13 @@ class Main {
     }
 
     getDateString(year, month, day, hour, minute) {
+        // default values if non provided
+        year = year ?? '2020';
+        month = month ?? '01';
+        day = day ?? '01';
+        hour = hour ?? '00';
+        minute = minute ?? '00';
+
         // pad total possible 0's then slice total possible 0's len from end of string
         const yearPad = `0000${year}`.slice(-4);
         const monthPad = `00${month}`.slice(-2);
